@@ -8,7 +8,7 @@ export default function RoomPage() {
   const { id } = useParams();
   const socketRef = useRef<WebSocket | null>(null);
   const [code, setCode] = useState("// Start coding...");
-  const backendUrl = process.env.NEXT_PUBLIC_BACKEND_URL;
+  const backendUrl = process.env.NEXT_PUBLIC_BACKEND_URL!;
 
   useEffect(() => {
   // ✅ Fetch existing code FIRST
