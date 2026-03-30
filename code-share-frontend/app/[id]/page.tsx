@@ -8,10 +8,11 @@ export default function RoomPage() {
   const { id } = useParams();
   const socketRef = useRef<WebSocket | null>(null);
   const [code, setCode] = useState("// Start coding...");
+  const backendUrl = process.env.NEXT_PUBLIC_BACKEND_URL;
 
   useEffect(() => {
   // ✅ Fetch existing code FIRST
-  fetch(`http://127.0.0.1:8000/room/${id}`)
+  fetch(`${backendUrl}/room/${id}`)
     .then(res => res.json())
     .then(data => {
       if (data.code) {
@@ -19,7 +20,9 @@ export default function RoomPage() {
       }
     });
 
-  const socket = new WebSocket(`ws://127.0.0.1:8000/ws/${id}`);
+  const wsUrl = backendUrl.replace("https", "wss");
+
+  const socket = new WebSocket(`${wsUrl}/ws/${id}`);
   socketRef.current = socket;
 
   socket.onmessage = (event) => {
