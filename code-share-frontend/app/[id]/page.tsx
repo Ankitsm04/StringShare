@@ -47,7 +47,7 @@ export default function RoomPage() {
       if (socketRef.current) {
         socketRef.current.send(newCode);
       }
-    }, 300); // send after 300ms pause
+    }, 100); // send after 300ms pause
   };
 
   return (
