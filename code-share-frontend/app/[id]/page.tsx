@@ -10,6 +10,7 @@ export default function RoomPage() {
   const socketRef = useRef<WebSocket | null>(null);
   const [code, setCode] = useState("// Start coding...");
   const backendUrl = process.env.NEXT_PUBLIC_BACKEND_URL!;
+  const timeoutRef = useRef<NodeJS.Timeout | null>(null);
 
   useEffect(() => {
   // ✅ Fetch existing code FIRST
@@ -35,11 +36,18 @@ export default function RoomPage() {
 }, [id, backendUrl]);
 
   const handleChange = (value: string | undefined) => {
-    setCode(value || "");
+    const newCode = value || "";
+    setCode(newCode);
 
-    if (socketRef.current) {
-      socketRef.current.send(value || "");
+    if (timeoutRef.current) {
+      clearTimeout(timeoutRef.current);
     }
+
+    timeoutRef.current = setTimeout(() => {
+      if (socketRef.current) {
+        socketRef.current.send(newCode);
+      }
+    }, 300); // send after 300ms pause
   };
 
   return (
