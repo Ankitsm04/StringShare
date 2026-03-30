@@ -5,7 +5,8 @@ import { useParams } from "next/navigation";
 import Editor from "@monaco-editor/react";
 
 export default function RoomPage() {
-  const { id } = useParams();
+  const params = useParams();
+  const id = params?.id as string;
   const socketRef = useRef<WebSocket | null>(null);
   const [code, setCode] = useState("// Start coding...");
   const backendUrl = process.env.NEXT_PUBLIC_BACKEND_URL!;
@@ -20,8 +21,7 @@ export default function RoomPage() {
       }
     });
 
-  const wsUrl = backendUrl.replace("https", "wss");
-
+  const wsUrl = backendUrl.replace(/^http/, "ws");
   const socket = new WebSocket(`${wsUrl}/ws/${id}`);
   socketRef.current = socket;
 
@@ -32,7 +32,7 @@ export default function RoomPage() {
   return () => {
     socket.close();
   };
-}, [id]);
+}, [id, backendUrl]);
 
   const handleChange = (value: string | undefined) => {
     setCode(value || "");
